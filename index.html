@@ -168,6 +168,151 @@ body {
 }
 
 /* ================= CLIPS ================= */
+.product-picker {
+  margin-bottom: 18px;
+}
+
+.product-picker-title {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #c98b7a;
+  font-family: Poppins, sans-serif;
+  letter-spacing: 1px;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.product-type-cards {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 110px;
+  padding: 14px 18px;
+  background: white;
+  border: 2px solid #f3d6df;
+  border-radius: 16px;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #7a5c55;
+  font-size: 26px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.type-card span {
+  font-size: 13px;
+}
+
+.type-card:hover {
+  border-color: var(--rose-main);
+}
+
+.type-card.selected {
+  border-color: var(--rose-main);
+  background: #fdf0eb;
+  box-shadow: 0 4px 14px rgba(217,107,143,0.18);
+}
+
+.type-card.selected::after {
+  content: "✓";
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 22px;
+  height: 22px;
+  background: var(--rose-main);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.variant-hint {
+  display: none;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--rose-main);
+  font-family: Poppins, sans-serif;
+  margin-bottom: 8px;
+  animation: hintPulse 1.4s ease-in-out infinite;
+}
+
+.variant-hint.active {
+  display: block;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.product-variant-cards {
+  display: none;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.product-variant-cards.active {
+  display: flex;
+}
+
+.variant-card {
+  padding: 9px 16px;
+  background: white;
+  border: 2px solid #f3d6df;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #7a5c55;
+  transition: all 0.2s ease;
+  position: relative;
+  padding-left: 28px;
+}
+
+.variant-card::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border: 2px solid #e0b8c2;
+  border-radius: 50%;
+  background: white;
+}
+
+.variant-card.selected {
+  border-color: var(--rose-main);
+  background: #fdf0eb;
+  color: var(--rose-main);
+}
+
+.variant-card.selected::before {
+  border-color: var(--rose-main);
+  background: var(--rose-main);
+  box-shadow: inset 0 0 0 3px white;
+}
 .product-clip {
   width: 220px;
   height: 180px;
@@ -178,6 +323,26 @@ body {
   background: transparent;
   margin-right: -35px;
   align-self: center;
+  position: relative;
+}
+
+.product-clip::after {
+  content: "Clip";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--rose-main);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.product-clip:has(img[src]:not([src=""]))::after {
+  display: none;
 }
 
 .product-clip img {
@@ -403,10 +568,11 @@ body {
   transition: all 0.25s ease;
 }
 
-.menu-item:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 25px rgba(217,107,143,0.15);
-  border-color: var(--rose-main);
+@media (hover: hover) {
+  .menu-item:hover {
+    box-shadow: 0 4px 10px rgba(217,107,143,0.12);
+    border-color: var(--rose-main);
+  }
 }
 
 #menu-fantaisie-fleurs .menu-item {
@@ -712,8 +878,34 @@ window.addEventListener("load", checkOrientation);
     </div>
   </div>
 
-  <!-- SELECTS -->
-  <div class="top-bar">
+  <!-- CHOIX DE LA CREATION -->
+  <div class="product-picker">
+    <div class="product-picker-title">✦ Choisissez la création de votre choix ✦</div>
+    <div class="product-type-cards">
+      <button type="button" class="type-card" data-type="tetine">🍼<span>Attache tétine</span></button>
+      <button type="button" class="type-card" data-type="doudou">🧸<span>Attache doudou</span></button>
+      <button type="button" class="type-card" data-type="portecle">🔑<span>Porte-clés</span></button>
+    </div>
+
+    <div class="variant-hint" id="variant-hint">👇 Choisissez maintenant votre option</div>
+    <div class="product-variant-cards" id="variant-tetine">
+      <button type="button" class="variant-card" data-value="simple">Simple</button>
+      <button type="button" class="variant-card" data-value="prenom1">Prénom + fantaisie</button>
+      <button type="button" class="variant-card" data-value="prenom2">Prénom + 2 fantaisies</button>
+    </div>
+    <div class="product-variant-cards" id="variant-doudou">
+      <button type="button" class="variant-card" data-value="sans">Sans prénom</button>
+      <button type="button" class="variant-card" data-value="prenom">Prénom + fantaisie</button>
+    </div>
+    <div class="product-variant-cards" id="variant-portecle">
+      <button type="button" class="variant-card" data-value="simple">Simple</button>
+      <button type="button" class="variant-card" data-value="fantaisie">Petites lettres</button>
+      <button type="button" class="variant-card" data-value="lettres">Grandes lettres</button>
+    </div>
+  </div>
+
+  <!-- SELECTS (gardés cachés pour la logique existante) -->
+  <div class="top-bar" style="display:none;">
     <select id="select-tetine" onchange="handleSelect('tetine', this.value)">
       <option value="">-- Tétine --</option>
       <option value="simple">Simple</option>
@@ -736,14 +928,15 @@ window.addEventListener("load", checkOrientation);
   </div>
 
   <!-- WORKSPACE -->
-  <div style="text-align:center;margin-bottom:8px;font-size:14px;font-weight:600;color:#c98b7a;font-family:Poppins,sans-serif;letter-spacing:1px;font-style:italic;">✦ Les couleurs peuvent légèrement varier selon les écrans ✦</div>
   <div id="workspace" style="position:relative;"><div id="boucle-tetine" style="display:none;position:absolute;right:20px;top:50%;transform:translateY(-50%);width:60px;">
   <svg width="100%" viewBox="0 0 200 320" role="img">
     <ellipse cx="100" cy="185" rx="50" ry="95" fill="none" stroke="#c8a882" stroke-width="7"/>
     <circle cx="100" cy="90" r="12" fill="#b8906a" stroke="#8a6040" stroke-width="1.5"/>
     <circle cx="96" cy="86" r="4" fill="#d4b090" opacity="0.6"/>
   </svg>
-</div></div>
+</div>
+  <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:600;color:#c98b7a;font-family:Poppins,sans-serif;letter-spacing:1px;font-style:italic;white-space:nowrap;pointer-events:none;">✦ Les couleurs peuvent légèrement varier selon les écrans ✦</div>
+</div>
 
   <!-- REGLE -->
   <div id="ruler-container" style="display:none;margin-bottom:14px;">
@@ -756,9 +949,9 @@ window.addEventListener("load", checkOrientation);
         
       </div>
     </div>
-    <div style="display:flex;font-size:10px;color:#d4b4a4;margin-top:3px;">
-      <div id="ruler-perles-label" style="flex:17;text-align:center;">← 17cm de perles →</div>
-      <div style="flex:5;text-align:center;">← fil 5cm →</div>
+    <div style="display:flex;font-size:9px;color:#d4b4a4;margin-top:3px;">
+      <div style="flex:17;"></div>
+      <div style="flex:5;text-align:center;">Boucle</div>
     </div>
     <div id="ruler-total" style="text-align:center;margin-top:2px;font-size:12px;font-weight:600;color:#c4a070;"></div>
 
@@ -790,6 +983,19 @@ window.addEventListener("load", checkOrientation);
         </label>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#7a5c5c;cursor:pointer;">
           <input type="radio" name="anneau" value="Double anneau (+17.90€)" style="accent-color:#c98b7a;"> Double anneau (+17.90€)
+        </label>
+      </div>
+
+      <div style="background:#fff3f6;border:1px solid #f3d6df;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+        <p style="font-size:13px;font-weight:600;color:#c98b7a;margin:0 0 10px;font-family:Poppins,sans-serif;">Couleur du fil *</p>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#7a5c5c;margin-bottom:6px;cursor:pointer;">
+          <input type="radio" name="fil" value="Rose" style="accent-color:#c98b7a;"> Rose
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#7a5c5c;margin-bottom:6px;cursor:pointer;">
+          <input type="radio" name="fil" value="Beige" style="accent-color:#c98b7a;"> Beige
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#7a5c5c;cursor:pointer;">
+          <input type="radio" name="fil" value="Blanc" style="accent-color:#c98b7a;"> Blanc
         </label>
       </div>
 
@@ -952,7 +1158,6 @@ const clips = [
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vert-standard-qspo7y.png", label: "Vert sauge" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/rose-poudre-standard-rqls9t.png", label: "Vieux rose" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ivoir-standard-04rehd.png", label: "Beige clair" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/beige-standard-9c9ejl.png", label: "Beige foncé" },
 ];
 
 const beadsPattern = [
@@ -1000,23 +1205,17 @@ const beadsPlain = [
 ];
 
 const fantaisiesFleurs = [
-  // Marguerites
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/N25dd5KC/fleur1-ezgif-com-crop.png", scale: 0.55, label: "Marguerite canard", mL90: "-59px", mR90: "-59px", mL270: "-61px", mR270: "-61px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/cXLfsgZy/fleur2-ezgif-com-crop.png", scale: 0.55, label: "Marguerite lilas", mL90: "-57px", mR90: "-56px", mL270: "-59px", mR270: "-58px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/NdvJ2N9M/fleur3-ezgif-com-crop.png", scale: 0.55, label: "Marguerite tourbe", mL90: "-57px", mR90: "-56px", mL270: "-59px", mR270: "-58px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/gbkH8tvr/fleur13-ezgif-com-crop.png", scale: 0.55, menuScale: 1.5, label: "Marguerite rose", mL90: "-68px", mR90: "-66px", mL270: "-66px", mR270: "-66px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/whHfmK3g/fleur14-ezgif-com-crop.png", scale: 0.55, menuScale: 1.3, label: "Marguerite beige", mL90: "-66px", mR90: "-66px", mL270: "-66px", mR270: "-66px" },
-  // Fleurs
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/SDFwBpHH/fleur4-ezgif-com-crop.png", scale: 0.55, label: "Fleur jaune", mL90: "-59px", mR90: "-57px", mL270: "-63px", mR270: "-61px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/b52W7tMm/fleur5-ezgif-com-crop.png", scale: 0.55, label: "Fleur blanche", mL90: "-59px", mR90: "-57px", mL270: "-63px", mR270: "-61px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/whHfmK3g/fleur14-ezgif-com-crop.png", scale: 0.55, menuScale: 1.2, label: "Marguerite beige", mL90: "-66px", mR90: "-66px", mL270: "-66px", mR270: "-66px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/SDFwBpHH/fleur4-ezgif-com-crop.png", scale: 0.55, label: "Fleur jaune", menuScale: 0.95, mL90: "-59px", mR90: "-57px", mL270: "-63px", mR270: "-61px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/b52W7tMm/fleur5-ezgif-com-crop.png", scale: 0.55, label: "Fleur blanche", menuScale: 1.0, mL90: "-59px", mR90: "-57px", mL270: "-63px", mR270: "-61px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/FqfqhqFw/fleur6-ezgif-com-crop.png", scale: 0.55, label: "Fleur marron", mL90: "-59px", mR90: "-57px", mL270: "-63px", mR270: "-61px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/ymbXFSx0/fleur7-ezgif-com-crop.png", scale: 0.55, label: "Fleur rose", mL90: "-59px", mR90: "-57px", mL270: "-63px", mR270: "-61px" },
-  // Demies fleurs
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/0p9bHqvv/fleur8-ezgif-com-crop.png", scale: 0.55, label: "Demie fleur saumon", mL90: "-77px", mR90: "-77px", mL270: "-74px", mR270: "-74px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/tTQVDBVR/fleur9-ezgif-com-crop.png", scale: 0.55, label: "Demie fleur marron", mL90: "-77px", mR90: "-77px", mL270: "-74px", mR270: "-74px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/cXM0r4t6/fleur10-ezgif-com-crop.png", scale: 0.55, label: "Demie fleur vert sauge", mL90: "-77px", mR90: "-77px", mL270: "-74px", mR270: "-74px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/wbZCJGz/fleur11-ezgif-com-crop.png", scale: 0.55, label: "Demie fleur vieux rose", mL90: "-77px", mR90: "-77px", mL270: "-74px", mR270: "-74px" },
-  // Feuilles
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/sd3Nttwy/fleur15-ezgif-com-crop.png", scale: 0.55, label: "Feuilles terracota", mL90: "-62px", mR90: "-64px", mL270: "-67px", mR270: "-65px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/qYYWbJRr/fleur16-ezgif-com-crop.png", scale: 0.55, label: "Feuille rose", mL90: "-62px", mR90: "-64px", mL270: "-67px", mR270: "-65px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/7JD4TTb6/fleur17-ezgif-com-crop.png", scale: 0.55, label: "Feuilles vert sauge", mL90: "-62px", mR90: "-64px", mL270: "-67px", mR270: "-65px" },
@@ -1028,37 +1227,39 @@ const fantaisiesVoitures = [
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/car-2-standard.png", mL90: "-58px", mR90: "-102px", mL270: "-99px", mR270: "-58px", offsetY270: "7px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/car-3-standard.png", scale: 2.5, mL90: "-58px", mR90: "-88px", offsetY270: "7px", mL270: "-96px", mR270: "-63px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/car-4-standard.png", scale: 2.5, mL90: "-55px", mR90: "-95px", offsetY90: "5px", offsetY270: "5px", mL270: "-85px", mR270: "-72px" },
+
 ];
 
 const fantaisies = [
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/dragon-standard.png", scale: 1.7, mL90: "-66px", mR90: "-63px", mL270: "-62px", mR270: "-63px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/elephant-standard.png", mL90: "-58px", mR90: "-75px", mL270: "-75px", mR270: "-57px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ours-standard.png", mL90: "-80px", mR90: "-75px", mL270: "-75px", mR270: "-80px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ourson-bleu-standard.png", mL90: "-61px", mR90: "-75px", mL270: "-75px", mR270: "-62px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ourson-standard.png", mL90: "-56px", mR90: "-75px", mL270: "-75px", mR270: "-57px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ours-2-standard.png", mL90: "-66px", mR90: "-81px", mL270: "-81px", mR270: "-66px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ours-1-standard.png", mL90: "-66px", mR90: "-75px", mL270: "-75px", mR270: "-66px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/koala-standard.png", mL90: "-68px", mR90: "-67px", mL270: "-68px", mR270: "-70px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ecureuil-standard.png", mL90: "-50px", mR90: "-75px", mL270: "-45px", mR270: "-65px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-bleu-standard.png", mL90: "-56px", mR90: "-72px", mL270: "-72px", mR270: "-55px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-jaune-standard.png", mL90: "-53px", mR90: "-70px", mL270: "-71px", mR270: "-52px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-marron-standard.png", mL90: "-52px", mR90: "-75px", mL270: "-75px", mR270: "-52px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-rose-standard.png", mL90: "-58px", mR90: "-68px", mL270: "-69px", mR270: "-59px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/singe-standard.png", mL90: "-53px", mR90: "-75px", mL270: "-75px", mR270: "-55px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ecureuil-standard.png", mL90: "-50px", mR90: "-75px", mL270: "-45px", mR270: "-65px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vache-standard.png", mL90: "-56px", mR90: "-75px", mL270: "-39px", mR270: "-75px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ours-2-standard.png", mL90: "-66px", mR90: "-81px", mL270: "-81px", mR270: "-66px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ours-1-standard.png", mL90: "-66px", mR90: "-75px", mL270: "-75px", mR270: "-66px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/tortue-standard.png", mL90: "-58px", mR90: "-73px", mL270: "-71px", mR270: "-58px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/panda-2-standard.png", mL90: "-65px", mR90: "-75px", mL270: "-73px", mR270: "-66px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/panda-1-standard.png", mL90: "-67px", mR90: "-77px", mL270: "-74px", mR270: "-66px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/loutre-standard.png", mL90: "-55px", mR90: "-73px", mL270: "-73px", mR270: "-55px", offsetY270: "4px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/dino-6-standard.png", scale: 1.6, mL90: "-60px", mR90: "-60px", mL270: "-45px", mR270: "-45px", offsetY90: "-8px", offsetY270: "-40px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/dino-7-standard.png", scale: 2.5, mL90: "-56px", mR90: "-39px", mL270: "-40px", mR270: "-58px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/bambi-standard.png", scale: 2.5, mL90: "-65px", mR90: "-66px", mL270: "-65px", mR270: "-64px", offsetY270: "3px", offsetY90: "3px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/cerf-standard.png", mL90: "-60px", mR90: "-64px", mL270: "-65px", mR270: "-62px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/bambi-2-standard.png", mL90: "-64px", mR90: "-65px", mL270: "-65px", mR270: "-65px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/lapin-standard.png", mL90: "-58px", mR90: "-64px", mL270: "-65px", mR270: "-58px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/lapin-3-standard.png", scale: 2.3, mL90: "-60px", mR90: "-62px", mL270: "-64px", mR270: "-59px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/koala-standard.png", mL90: "-68px", mR90: "-67px", mL270: "-68px", mR270: "-70px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/cerf-standard.png", mL90: "-60px", mR90: "-64px", mL270: "-65px", mR270: "-62px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/dino-6-standard.png", scale: 1.6, mL90: "-60px", mR90: "-60px", mL270: "-45px", mR270: "-45px", offsetY90: "-8px", offsetY270: "-40px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/panda-2-standard.png", mL90: "-65px", mR90: "-75px", mL270: "-73px", mR270: "-66px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/panda-1-standard.png", mL90: "-67px", mR90: "-77px", mL270: "-74px", mR270: "-66px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/poisson-standard.png", mL90: "-73px", mR90: "-72px", mL270: "-68px", mR270: "-71px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/poisson-2-standard.png", mL90: "-74px", mR90: "-70px", mL270: "-68px", mR270: "-74px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/bambi-2-standard.png", mL90: "-64px", mR90: "-65px", mL270: "-65px", mR270: "-65px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/dino-7-standard.png", scale: 2.5, mL90: "-56px", mR90: "-39px", mL270: "-40px", mR270: "-58px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/dragon-standard.png", scale: 1.7, mL90: "-66px", mR90: "-63px", mL270: "-62px", mR270: "-63px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/elephant-standard.png", mL90: "-58px", mR90: "-75px", mL270: "-75px", mR270: "-57px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/singe-standard.png", mL90: "-53px", mR90: "-75px", mL270: "-75px", mR270: "-55px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vache-standard.png", mL90: "-56px", mR90: "-75px", mL270: "-39px", mR270: "-75px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/tortue-standard.png", mL90: "-58px", mR90: "-73px", mL270: "-71px", mR270: "-58px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/loutre-standard.png", mL90: "-55px", mR90: "-73px", mL270: "-73px", mR270: "-55px", offsetY270: "4px" },
+
 ];
 
 
@@ -1094,7 +1295,6 @@ const beadsHexagon = [
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-standard-dir4p8.png", label: "Rose", offsetY: "1px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/bf-standard-w1rzaz.png", label: "Beige foncé", scale: 2.8 },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/t-standard-nfdvz8.png", label: "Terracota", scale: 2.7 },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vf-standard-kpkxay.png", label: "Vert foncé", scale: 2.06 },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vp-standard-42k6ea.png", label: "Vert sauge", scale: 2.25 },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/m-standard-loion6.png", label: "Marron", scale: 2.7 },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vr-standard-8ggbxn.png", label: "Rose foncé", scale: 2.5, offsetY: "-1%" },
@@ -1137,6 +1337,11 @@ function createProduct(type) {
   conseilDiv.style.cssText = "position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:14px;font-weight:600;color:#c98b7a;font-style:italic;font-family:Poppins,sans-serif;white-space:nowrap;z-index:0;pointer-events:none;";
   conseilDiv.textContent = "✦ Bougez vos perles librement en restant appuyé ✦";
   workspaceEl.appendChild(conseilDiv);
+
+  const couleursDiv = document.createElement("div");
+  couleursDiv.style.cssText = "position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:600;color:#c98b7a;font-family:Poppins,sans-serif;letter-spacing:1px;font-style:italic;white-space:nowrap;pointer-events:none;z-index:0;";
+  couleursDiv.textContent = "✦ Les couleurs peuvent légèrement varier selon les écrans ✦";
+  workspaceEl.appendChild(couleursDiv);
 
   currentClipImg = null;
   currentClipRightImg = null;
@@ -1224,6 +1429,36 @@ function createProduct(type) {
 /* ===========================
    GESTION DES SELECTS
 =========================== */
+/* ===========================
+   CARTES DE CHOIX DE CREATION
+=========================== */
+document.querySelectorAll('.type-card').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.type-card').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.querySelectorAll('.product-variant-cards').forEach(v => {
+      v.classList.remove('active');
+      v.querySelectorAll('.variant-card').forEach(vc => vc.classList.remove('selected'));
+    });
+    const target = document.getElementById('variant-' + btn.dataset.type);
+    if (target) target.classList.add('active');
+    const hint = document.getElementById('variant-hint');
+    if (hint) hint.classList.add('active');
+  });
+});
+
+document.querySelectorAll('.variant-card').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const group = btn.closest('.product-variant-cards');
+    group.querySelectorAll('.variant-card').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const type = group.id.replace('variant-', '');
+    handleSelect(type, btn.dataset.value);
+    const hint = document.getElementById('variant-hint');
+    if (hint) hint.classList.remove('active');
+  });
+});
+
 function handleSelect(type, option) {
   const allSelects = ["select-tetine", "select-doudou", "select-portecle"];
   allSelects.forEach(id => {
@@ -1324,8 +1559,52 @@ function autoScaleMobile() {
   line.style.transformOrigin = "left center";
 }
 
+function enforceFantaisiePosition() {
+  if (!currentProduct) return false;
+  const items = Array.from(currentProduct.querySelectorAll(".product-item"));
+  let moved = false;
+  items.forEach((item, i) => {
+    if (item.dataset.type !== "fantaisie") return;
+    const prevType = i > 0 ? items[i - 1].dataset.type : null;
+    const nextType = i < items.length - 1 ? items[i + 1].dataset.type : null;
+    if (isLetter(prevType) && isLetter(nextType)) {
+      // Coincée entre deux lettres : on la renvoie à l'extrémité la plus proche
+      const distToStart = i;
+      const distToEnd = items.length - 1 - i;
+      if (distToStart <= distToEnd) {
+        currentProduct.insertBefore(item, currentProduct.firstChild);
+      } else {
+        currentProduct.appendChild(item);
+      }
+      moved = true;
+    }
+  });
+  return moved;
+}
+
+function enforceSeparateurLimit() {
+  if (!currentProduct) return false;
+  const items = Array.from(currentProduct.querySelectorAll(".product-item"));
+  let freeCount = 0;
+  const toRemove = [];
+  items.forEach((item, i) => {
+    if (item.dataset.type !== "separateur") return;
+    const prevType = i > 0 ? items[i - 1].dataset.type : null;
+    const nextType = i < items.length - 1 ? items[i + 1].dataset.type : null;
+    const betweenLetters = isLetter(prevType) && isLetter(nextType);
+    if (!betweenLetters) {
+      freeCount++;
+      if (freeCount > 2) toRemove.push(item);
+    }
+  });
+  toRemove.forEach(item => item.remove());
+  return toRemove.length > 0;
+}
+
 function recalculateMargins() {
   if (!currentProduct) return;
+  enforceFantaisiePosition();
+  enforceSeparateurLimit();
   const items = Array.from(currentProduct.querySelectorAll(".product-item"));
   items.forEach((item, i) => {
     if (i === 0) {
@@ -1518,8 +1797,6 @@ function makeProductItem(d, type) {
   item.addEventListener("drop", e => {
     e.preventDefault();
     if (!draggedItem || draggedItem === item) return;
-    if (type === "fantaisie") return;
-    if (draggedItem.dataset.type === "fantaisie") return;
     const rect = item.getBoundingClientRect();
     if (e.clientX < rect.left + rect.width / 2) item.before(draggedItem);
     else item.after(draggedItem);
@@ -1711,12 +1988,12 @@ function fillMenu(id, data, type) {
     const img = document.createElement("img");
     img.src = d.img;
     img.alt = "";
-    // Zoom spécifique si menuScale défini
+    // Zoom spécifique si menuScale défini (priorité forcée sur le CSS !important)
     if (d.menuScale) {
-      img.style.transform = "scale(" + d.menuScale + ")";
-      img.style.width = "90%";
-      img.style.height = "90%";
-      img.style.objectFit = "contain";
+      img.style.setProperty("transform", "scale(" + d.menuScale + ")", "important");
+      img.style.setProperty("width", "90%", "important");
+      img.style.setProperty("height", "90%", "important");
+      img.style.setProperty("object-fit", "contain", "important");
     }
     // Style image dans le menu selon le type
     if (type === "rainure") {
@@ -2077,7 +2354,7 @@ function getSizeMM(type, img) {
     if (img && img.includes("bambi-3")) return 32;
     return 30; // taille par defaut
   }
-  if (type === "separateur") return 2;
+  if (type === "separateur") return 4;
   if (type === "hexagon") return 14;
   if (type === "rainure") return 15;
   if (type === "bead-plain" || type === "bead-pattern") return 15;
@@ -2146,8 +2423,10 @@ function submitOrder() {
   const email = document.getElementById("client-email").value.trim();
   const anneauSection = document.getElementById("anneau-section");
   const anneauChecked = document.querySelector("input[name=anneau]:checked");
+  const filChecked = document.querySelector("input[name=fil]:checked");
   const isTetineForm = currentProductType === "tetine";
-  if (!prenom || !nom || !email || (isTetineForm && !anneauChecked)) { document.getElementById("form-error").style.display = "block"; return; }
+  if (!prenom || !nom || !email || !filChecked || (isTetineForm && !anneauChecked)) { document.getElementById("form-error").style.display = "block"; return; }
+  const filChoix = filChecked.value;
   const anneauChoix = (isTetineForm && anneauChecked) ? anneauChecked.value : "";
   const items = currentProduct.querySelectorAll(".product-item");
   const pearlList = Array.from(items).map(i => {
@@ -2245,7 +2524,7 @@ function submitOrder() {
       .then(data => {
         const imageUrl = data.secure_url;
         emailjs.send("service_prxb9i9", "template_e7bcy2d", {
-          client_prenom: prenom, client_nom: nom, client_email: email, client_tel: tel, produit, prenom_perso, composition, prix, message, anneau: anneauInfo,
+          client_prenom: prenom, client_nom: nom, client_email: email, client_tel: tel, produit, prenom_perso, composition, prix, message, anneau: anneauInfo, fil: filChoix,
           image_creation: imageUrl
         }).then(() => {
           document.getElementById("order-success").style.display = "block";
@@ -2256,7 +2535,7 @@ function submitOrder() {
       .catch(() => {
         // Si Cloudinary échoue, envoyer sans image
         emailjs.send("service_prxb9i9", "template_e7bcy2d", {
-          client_prenom: prenom, client_nom: nom, client_email: email, client_tel: tel, produit, prenom_perso, composition, prix, message, anneau: anneauInfo,
+          client_prenom: prenom, client_nom: nom, client_email: email, client_tel: tel, produit, prenom_perso, composition, prix, message, anneau: anneauInfo, fil: filChoix,
           image_creation: "Image non disponible"
         }).then(() => {
           document.getElementById("order-success").style.display = "block";
@@ -2267,7 +2546,7 @@ function submitOrder() {
     }, "image/jpeg", 0.8);
   }).catch(() => {
     emailjs.send("service_prxb9i9", "template_e7bcy2d", {
-      client_prenom: prenom, client_nom: nom, client_email: email, client_tel: tel, produit, prenom_perso, composition, prix, message, anneau: anneauInfo,
+      client_prenom: prenom, client_nom: nom, client_email: email, client_tel: tel, produit, prenom_perso, composition, prix, message, anneau: anneauInfo, fil: filChoix,
       image_creation: "Image non disponible"
     }).then(() => {
       document.getElementById("order-success").style.display = "block";
