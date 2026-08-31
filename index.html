@@ -1206,8 +1206,8 @@ const beadsPlain = [
 
 const fantaisiesFleurs = [
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/cXLfsgZy/fleur2-ezgif-com-crop.png", scale: 0.55, label: "Marguerite lilas", mL90: "-57px", mR90: "-56px", mL270: "-59px", mR270: "-58px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/gbkH8tvr/fleur13-ezgif-com-crop.png", scale: 0.55, menuScale: 1.15, boxScale: 1.3, label: "Marguerite rose", mL90: "-68px", mR90: "-66px", mL270: "-66px", mR270: "-66px" },
-  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/whHfmK3g/fleur14-ezgif-com-crop.png", scale: 0.55, menuScale: 1.0, boxScale: 1.3, label: "Marguerite beige", mL90: "-66px", mR90: "-66px", mL270: "-66px", mR270: "-66px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/gbkH8tvr/fleur13-ezgif-com-crop.png", scale: 0.55, menuScale: 1.0, boxScale: 1.3, label: "Marguerite rose", mL90: "-68px", mR90: "-66px", mL270: "-66px", mR270: "-66px" },
+  { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/whHfmK3g/fleur14-ezgif-com-crop.png", scale: 0.55, menuScale: 0.85, boxScale: 1.3, label: "Marguerite beige", mL90: "-66px", mR90: "-66px", mL270: "-66px", mR270: "-66px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/SDFwBpHH/fleur4-ezgif-com-crop.png", scale: 0.55, label: "Fleur jaune", menuScale: 1.3, mL90: "-59px", mR90: "-57px", mL270: "-63px", mR270: "-61px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/b52W7tMm/fleur5-ezgif-com-crop.png", scale: 0.55, label: "Fleur blanche", menuScale: 1.3, mL90: "-59px", mR90: "-57px", mL270: "-63px", mR270: "-61px" },
   { img: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/FqfqhqFw/fleur6-ezgif-com-crop.png", scale: 0.55, label: "Fleur marron", mL90: "-59px", mR90: "-57px", mL270: "-63px", mR270: "-61px" },
@@ -1996,9 +1996,11 @@ function fillMenu(id, data, type) {
       img.style.setProperty("object-fit", "contain", "important");
     }
     if (d.boxScale) {
-      div.style.setProperty("transform", "scale(" + d.boxScale + ")", "important");
-      div.style.marginBottom = (d.boxScale - 1) * 55 + "px";
-      div.style.marginTop = (d.boxScale - 1) * 25 + "px";
+      const isMobileScreen = window.innerWidth < 600;
+      const effectiveBoxScale = isMobileScreen ? 1 + (d.boxScale - 1) * 0.4 : d.boxScale;
+      div.style.setProperty("transform", "scale(" + effectiveBoxScale + ")", "important");
+      div.style.marginBottom = (effectiveBoxScale - 1) * 55 + "px";
+      div.style.marginTop = (effectiveBoxScale - 1) * 25 + "px";
     }
     // Style image dans le menu selon le type
     if (type === "rainure") {
