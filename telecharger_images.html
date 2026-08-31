@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Télécharger toutes les images</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color:#5a4a45; }
+  h1 { color: #c98b7a; font-size: 20px; }
+  button { background: #c98b7a; color:white; border:none; padding:14px 28px; border-radius:30px; font-size:16px; cursor:pointer; margin: 10px 0; }
+  button:disabled { background:#ccc; }
+  #status { margin-top:20px; font-size:14px; white-space:pre-line; max-height:300px; overflow-y:auto; border:1px solid #eee; padding:10px; border-radius:8px; background:#fafafa; }
+  #progress { font-weight:bold; margin-top:10px; }
+</style>
+</head>
+<body>
+  <h1>✦ Téléchargeur d'images — Les Perles de Léa ✦</h1>
+  <p>Ce bouton va déclencher le téléchargement des 174 images, une par une, avec leur nom exact. Ton navigateur va peut-être te demander l'autorisation de télécharger plusieurs fichiers — accepte "Autoriser".</p>
+  <button id="startBtn" onclick="startDownload()">⬇ Télécharger toutes les images (174)</button>
+  <div id="progress"></div>
+  <div id="status"></div>
+
+<script>
+const images = [
+      { name: "25a73031-fe24-4756-bd05-eb21881a7781-high.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/25a73031-fe24-4756-bd05-eb21881a7781-high.png?enable-io=true&enable=upscale&height=70" },
+      { name: "a-standard-olg5ik.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/a-standard-olg5ik.png" },
+      { name: "b-standard-zdktu2.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/b-standard-zdktu2.png" },
+      { name: "c-standard-ict8a5.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/c-standard-ict8a5.png" },
+      { name: "d-standard-7e89nv.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/d-standard-7e89nv.png" },
+      { name: "e-standard-ip297t.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/e-standard-ip297t.png" },
+      { name: "f-standard-nw54ut.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/f-standard-nw54ut.png" },
+      { name: "g-standard-g6oi3d.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/g-standard-g6oi3d.png" },
+      { name: "h-standard-59tgwj.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/h-standard-59tgwj.png" },
+      { name: "i-standard-u1ena0.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/i-standard-u1ena0.png" },
+      { name: "j-standard-04kwlm.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/j-standard-04kwlm.png" },
+      { name: "k-standard-i2x0go.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/k-standard-i2x0go.png" },
+      { name: "l-standard-vuwp8s.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/l-standard-vuwp8s.png" },
+      { name: "m-standard-f7p3c0.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/m-standard-f7p3c0.png" },
+      { name: "n-standard-kjiht4.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/n-standard-kjiht4.png" },
+      { name: "o-standard-bc8vtb.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/o-standard-bc8vtb.png" },
+      { name: "p-standard-whwsxv.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/p-standard-whwsxv.png" },
+      { name: "q-standard-h2yfml.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/q-standard-h2yfml.png" },
+      { name: "r-standard-g0lge9.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-standard-g0lge9.png" },
+      { name: "s-standard-x64xdd.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/s-standard-x64xdd.png" },
+      { name: "t-standard-t7e4if.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/t-standard-t7e4if.png" },
+      { name: "u-standard-eqdit9.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/u-standard-eqdit9.png" },
+      { name: "v-standard-o1w2n5.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/v-standard-o1w2n5.png" },
+      { name: "w-standard-h9omom.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/w-standard-h9omom.png" },
+      { name: "x-standard-5wxk95.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/x-standard-5wxk95.png" },
+      { name: "y-standard-250z2d.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/y-standard-250z2d.png" },
+      { name: "z-standard-yc123f.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/z-standard-yc123f.png" },
+      { name: "a-standard-jktgq2.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/a-standard-jktgq2.png" },
+      { name: "b-standard-o0jhxo.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/b-standard-o0jhxo.png" },
+      { name: "c-standard-ni3vrb.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/c-standard-ni3vrb.png" },
+      { name: "d-standard-o2ewox.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/d-standard-o2ewox.png" },
+      { name: "e-standard-hlzekc.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/e-standard-hlzekc.png" },
+      { name: "ee-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ee-standard.png" },
+      { name: "eee-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/eee-standard.png" },
+      { name: "f-standard-q3t0ty.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/f-standard-q3t0ty.png" },
+      { name: "g-standard-e4jw05.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/g-standard-e4jw05.png" },
+      { name: "h-standard-xwozwm.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/h-standard-xwozwm.png" },
+      { name: "i-standard-0a80yf.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/i-standard-0a80yf.png" },
+      { name: "ii-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ii-standard.png" },
+      { name: "j-standard-84722s.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/j-standard-84722s.png" },
+      { name: "k-standard-nw6lx2.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/k-standard-nw6lx2.png" },
+      { name: "l-standard-3led23.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/l-standard-3led23.png" },
+      { name: "m-standard-tmvh5r.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/m-standard-tmvh5r.png" },
+      { name: "n-standard-3wht6a.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/n-standard-3wht6a.png" },
+      { name: "o-standard-resnoh.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/o-standard-resnoh.png" },
+      { name: "p-standard-pu8au2.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/p-standard-pu8au2.png" },
+      { name: "q-standard-vygmq9.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/q-standard-vygmq9.png" },
+      { name: "r-standard-we8uuh.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-standard-we8uuh.png" },
+      { name: "s-standard-y9i7kq.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/s-standard-y9i7kq.png" },
+      { name: "t-standard-we1bwk.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/t-standard-we1bwk.png" },
+      { name: "u-standard-9lpjzu.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/u-standard-9lpjzu.png" },
+      { name: "v-standard-3igaqy.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/v-standard-3igaqy.png" },
+      { name: "w-standard-wtwpr1.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/w-standard-wtwpr1.png" },
+      { name: "x-standard-8bf9n7.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/x-standard-8bf9n7.png" },
+      { name: "y-standard-wjxkbt.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/y-standard-wjxkbt.png" },
+      { name: "z-standard-5arvjm.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/z-standard-5arvjm.png" },
+      { name: "blanc-standard-5mof3n.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/blanc-standard-5mof3n.png" },
+      { name: "bleu-standard-u4lfh2.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/bleu-standard-u4lfh2.png" },
+      { name: "marron-standard-mbkqeb.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/marron-standard-mbkqeb.png" },
+      { name: "noir-standard-dlrink.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/noir-standard-dlrink.png" },
+      { name: "rose-standard-yadgbp.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/rose-standard-yadgbp.png" },
+      { name: "vert-standard-qspo7y.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vert-standard-qspo7y.png" },
+      { name: "rose-poudre-standard-rqls9t.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/rose-poudre-standard-rqls9t.png" },
+      { name: "ivoir-standard-04rehd.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ivoir-standard-04rehd.png" },
+      { name: "beige-standard-9c9ejl.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/beige-standard-9c9ejl.png" },
+      { name: "photoroom_20260508_160627-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_160627-ezgif-com-crop-standard.png" },
+      { name: "17-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/17-ezgif-com-crop-standard.png" },
+      { name: "photoroom_20260508_162715-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_162715-ezgif-com-crop-standard.png" },
+      { name: "18-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/18-ezgif-com-crop-standard.png" },
+      { name: "16-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/16-ezgif-com-crop-standard.png" },
+      { name: "15-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/15-ezgif-com-crop-standard.png" },
+      { name: "14-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/14-ezgif-com-crop-standard.png" },
+      { name: "12-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/12-ezgif-com-crop-standard.png" },
+      { name: "22-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/22-ezgif-com-crop-standard.png" },
+      { name: "21-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/21-ezgif-com-crop-standard.png" },
+      { name: "20-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/20-ezgif-com-crop-standard.png" },
+      { name: "11-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/11-ezgif-com-crop-standard.png" },
+      { name: "10-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/10-ezgif-com-crop-standard.png" },
+      { name: "2-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/2-ezgif-com-crop-standard.png" },
+      { name: "photoroom_20260508_160001-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_160001-ezgif-com-crop-standard.png" },
+      { name: "photoroom_20260508_160818-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_160818-ezgif-com-crop-standard.png" },
+      { name: "photoroom_20260508_161051-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_161051-ezgif-com-crop-standard.png" },
+      { name: "3-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/3-ezgif-com-crop-standard.png" },
+      { name: "photoroom_20260508_160737-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_160737-ezgif-com-crop-standard.png" },
+      { name: "photoroom_20260508_160952-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_160952-ezgif-com-crop-standard.png" },
+      { name: "32-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/32-ezgif-com-crop-standard.png" },
+      { name: "34-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/34-ezgif-com-crop-standard.png" },
+      { name: "24-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/24-ezgif-com-crop-standard.png" },
+      { name: "30-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/30-ezgif-com-crop-standard.png" },
+      { name: "31-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/31-ezgif-com-crop-standard.png" },
+      { name: "photoroom_20260508_160705-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_160705-ezgif-com-crop-standard.png" },
+      { name: "5-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/5-ezgif-com-crop-standard.png" },
+      { name: "28-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/28-ezgif-com-crop-standard.png" },
+      { name: "29-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/29-ezgif-com-crop-standard.png" },
+      { name: "6-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/6-ezgif-com-crop-standard.png" },
+      { name: "Photoroom-20260608-172929-ezgif-com-crop-removebg-preview.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/zTnwNdLt/Photoroom-20260608-172929-ezgif-com-crop-removebg-preview.png" },
+      { name: "1-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/1-ezgif-com-crop-standard.png" },
+      { name: "photoroom_20260508_161030-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_161030-ezgif-com-crop-standard.png" },
+      { name: "4-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/4-ezgif-com-crop-standard.png" },
+      { name: "photoroom_20260508_160549-ezgif-com-crop-1-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_160549-ezgif-com-crop-1-standard.png" },
+      { name: "photoroom_20260508_160608-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/photoroom_20260508_160608-ezgif-com-crop-standard.png" },
+      { name: "23-ezgif-com-crop-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/23-ezgif-com-crop-standard.png" },
+      { name: "fleur1-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/N25dd5KC/fleur1-ezgif-com-crop.png" },
+      { name: "fleur2-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/cXLfsgZy/fleur2-ezgif-com-crop.png" },
+      { name: "fleur3-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/NdvJ2N9M/fleur3-ezgif-com-crop.png" },
+      { name: "fleur13-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/gbkH8tvr/fleur13-ezgif-com-crop.png" },
+      { name: "fleur14-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/whHfmK3g/fleur14-ezgif-com-crop.png" },
+      { name: "fleur4-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/SDFwBpHH/fleur4-ezgif-com-crop.png" },
+      { name: "fleur5-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/b52W7tMm/fleur5-ezgif-com-crop.png" },
+      { name: "fleur6-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/FqfqhqFw/fleur6-ezgif-com-crop.png" },
+      { name: "fleur7-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/ymbXFSx0/fleur7-ezgif-com-crop.png" },
+      { name: "fleur8-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/0p9bHqvv/fleur8-ezgif-com-crop.png" },
+      { name: "fleur9-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/tTQVDBVR/fleur9-ezgif-com-crop.png" },
+      { name: "fleur10-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/cXM0r4t6/fleur10-ezgif-com-crop.png" },
+      { name: "fleur11-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/wbZCJGz/fleur11-ezgif-com-crop.png" },
+      { name: "fleur15-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/sd3Nttwy/fleur15-ezgif-com-crop.png" },
+      { name: "fleur16-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/qYYWbJRr/fleur16-ezgif-com-crop.png" },
+      { name: "fleur17-ezgif-com-crop.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://i.ibb.co/7JD4TTb6/fleur17-ezgif-com-crop.png" },
+      { name: "car-1-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/car-1-standard.png" },
+      { name: "car-2-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/car-2-standard.png" },
+      { name: "car-3-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/car-3-standard.png" },
+      { name: "car-4-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/car-4-standard.png" },
+      { name: "dragon-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/dragon-standard.png" },
+      { name: "elephant-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/elephant-standard.png" },
+      { name: "ours-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ours-standard.png" },
+      { name: "ourson-bleu-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ourson-bleu-standard.png" },
+      { name: "ourson-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ourson-standard.png" },
+      { name: "r-bleu-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-bleu-standard.png" },
+      { name: "r-jaune-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-jaune-standard.png" },
+      { name: "r-marron-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-marron-standard.png" },
+      { name: "r-rose-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-rose-standard.png" },
+      { name: "singe-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/singe-standard.png" },
+      { name: "ecureuil-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ecureuil-standard.png" },
+      { name: "vache-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vache-standard.png" },
+      { name: "ours-2-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ours-2-standard.png" },
+      { name: "ours-1-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/ours-1-standard.png" },
+      { name: "tortue-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/tortue-standard.png" },
+      { name: "panda-2-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/panda-2-standard.png" },
+      { name: "panda-1-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/panda-1-standard.png" },
+      { name: "loutre-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/loutre-standard.png" },
+      { name: "bambi-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/bambi-standard.png" },
+      { name: "lapin-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/lapin-standard.png" },
+      { name: "lapin-3-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/lapin-3-standard.png" },
+      { name: "koala-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/koala-standard.png" },
+      { name: "cerf-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/cerf-standard.png" },
+      { name: "dino-6-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/dino-6-standard.png" },
+      { name: "poisson-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/poisson-standard.png" },
+      { name: "poisson-2-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/poisson-2-standard.png" },
+      { name: "bambi-2-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/bambi-2-standard.png" },
+      { name: "dino-7-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/dino-7-standard.png" },
+      { name: "1-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/1-standard.png" },
+      { name: "3-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/3-standard.png" },
+      { name: "4-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/4-standard.png" },
+      { name: "6-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/6-standard.png" },
+      { name: "7-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/7-standard.png" },
+      { name: "8-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/8-standard.png" },
+      { name: "9-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/9-standard.png" },
+      { name: "11-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/11-standard.png" },
+      { name: "12-standard.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/12-standard.png" },
+      { name: "2-standard-vcnawf.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/2-standard-vcnawf.png" },
+      { name: "3-standard-7g440r.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/3-standard-7g440r.png" },
+      { name: "4-standard-u1hvn1.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/4-standard-u1hvn1.png" },
+      { name: "5-standard-2bfpd1.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/5-standard-2bfpd1.png" },
+      { name: "6-standard-y9tu6r.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/6-standard-y9tu6r.png" },
+      { name: "7-standard-advqwl.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/7-standard-advqwl.png" },
+      { name: "8-standard-03irpm.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/8-standard-03irpm.png" },
+      { name: "r-standard-dir4p8.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/r-standard-dir4p8.png" },
+      { name: "bf-standard-w1rzaz.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/bf-standard-w1rzaz.png" },
+      { name: "t-standard-nfdvz8.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/t-standard-nfdvz8.png" },
+      { name: "vf-standard-kpkxay.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vf-standard-kpkxay.png" },
+      { name: "vp-standard-42k6ea.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vp-standard-42k6ea.png" },
+      { name: "m-standard-loion6.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/m-standard-loion6.png" },
+      { name: "vr-standard-8ggbxn.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/vr-standard-8ggbxn.png" },
+      { name: "bc-standard-wlu9xv.png", url: "https://res.cloudinary.com/hxrentte/image/fetch/https://primary.jwwb.nl/public/n/o/w/temp-sdchedeyhqvjkgjtjnrx/bc-standard-wlu9xv.png" },
+    ];
+
+async function startDownload() {
+  const btn = document.getElementById("startBtn");
+  const status = document.getElementById("status");
+  const progress = document.getElementById("progress");
+  btn.disabled = true;
+  let done = 0, failed = 0;
+
+  for (const img of images) {
+    try {
+      const res = await fetch(img.url, { mode: "cors" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const blob = await res.blob();
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = img.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      done++;
+      status.textContent += "✅ " + img.name + "\n";
+    } catch (e) {
+      failed++;
+      status.textContent += "❌ " + img.name + " (échec : " + e.message + ")\n";
+    }
+    progress.textContent = "Progression : " + (done + failed) + " / 174 (✅ " + done + " / ❌ " + failed + ")";
+    await new Promise(r => setTimeout(r, 150));
+  }
+  progress.textContent += "  — Terminé !";
+  btn.disabled = false;
+  btn.textContent = "Relancer";
+}
+</script>
+</body>
+</html>
